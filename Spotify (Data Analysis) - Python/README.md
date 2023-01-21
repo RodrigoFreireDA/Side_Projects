@@ -1,3 +1,5 @@
+<h1> Spotify (Data Analysis) - Python </h1>
+
 Hi, this was my first side project. I used a dataset from kaggle to perform exploratory data analysis using Python | [Code](https://github.com/RodrigoFreireDA/side_projects/blob/main/Spotify%20(Data%20Analysis)%20-%20Python/Spotify.ipynb)
 
 
