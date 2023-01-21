@@ -1,4 +1,5 @@
-This was my first side project. I used a dataset from kaggle to perform exploratory data analysis using Python.
+Hi, this was my first side project. I used a dataset from kaggle to perform exploratory data analysis using Python | [Code](https://github.com/RodrigoFreireDA/side_projects/blob/main/Spotify%20(Data%20Analysis)%20-%20Python/Spotify.ipynb)
+
 
 <h2> Variables Description </h2>
 
