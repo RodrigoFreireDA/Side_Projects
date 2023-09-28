@@ -1,0 +1,7 @@
+C:\Windows\Temp\BI Project\2nd Semester\Group08\SSAS Project\bin\Model.asdatabase
+C:\Windows\Temp\BI Project\2nd Semester\Group08\SSAS Project\bin\Model.deploymenttargets
+C:\Windows\Temp\BI Project\2nd Semester\Group08\SSAS Project\bin\Model.deploymentoptions
+C:\Windows\Temp\BI Project\2nd Semester\Group08\SSAS Project\obj\Development\BI_2.smproj.CoreCompileInputs.cache
+C:\Windows\Temp\BI Project\2nd Semester\Group08\SSAS Project\obj\Development\Model.asdatabase
+C:\Windows\Temp\BI Project\2nd Semester\Group08\SSAS Project\obj\Development\Model.deploymentoptions
+C:\Windows\Temp\BI Project\2nd Semester\Group08\SSAS Project\obj\Development\Model.deploymenttargets

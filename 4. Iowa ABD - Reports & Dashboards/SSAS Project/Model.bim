@@ -1,0 +1,1493 @@
+{
+  "name": "SemanticModel",
+  "compatibilityLevel": 1500,
+  "model": {
+    "culture": "en-US",
+    "discourageImplicitMeasures": true,
+    "dataSources": [
+      {
+        "type": "structured",
+        "name": "SQL/ ;BI_PROJECT_DW",
+        "connectionDetails": {
+          "protocol": "tds",
+          "address": {
+            "server": ".",
+            "database": "BI_PROJECT_DW"
+          },
+          "authentication": null,
+          "query": null
+        },
+        "credential": {
+          "AuthenticationKind": "ServiceAccount",
+          "EncryptConnection": false
+        }
+      }
+    ],
+    "tables": [
+      {
+        "name": "CalculationGroup 1",
+        "calculationGroup": {
+          "calculationItems": [
+            {
+              "name": "CalculationItem 1"
+            }
+          ]
+        },
+        "columns": [
+          {
+            "name": "CalculationItemColumn 1",
+            "dataType": "string",
+            "sourceColumn": "Name"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "CalculationGroup 1",
+            "mode": "import",
+            "source": {
+              "type": "calculationGroup"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Fact Sales",
+        "columns": [
+          {
+            "name": "FK_Date",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "FK_Date"
+          },
+          {
+            "name": "FK_Vendor",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "FK_Vendor"
+          },
+          {
+            "name": "FK_Product",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "FK_Product"
+          },
+          {
+            "name": "FK_Store",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "FK_Store"
+          },
+          {
+            "name": "FK_Shipping",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "FK_Shipping"
+          },
+          {
+            "name": "Sales Quantity",
+            "dataType": "int64",
+            "sourceColumn": "Sales_Quantity",
+            "formatString": "0"
+          },
+          {
+            "name": "Sales Amount",
+            "dataType": "double",
+            "sourceColumn": "Sales_Amount",
+            "formatString": "\\$#,0.00;(\\$#,0.00);\\$#,0.00",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"Currency\" Accuracy=\"2\" ThousandSeparator=\"True\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"0\" /></Format>"
+              }
+            ]
+          },
+          {
+            "name": "Cost Amount",
+            "dataType": "double",
+            "sourceColumn": "Cost_Amount",
+            "formatString": "\\$#,0.00;(\\$#,0.00);\\$#,0.00",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"Currency\" Accuracy=\"2\" ThousandSeparator=\"True\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"0\" /></Format>"
+              }
+            ]
+          },
+          {
+            "name": "Profit Amount",
+            "dataType": "double",
+            "sourceColumn": "Profit_Amount",
+            "formatString": "\\$#,0.00;(\\$#,0.00);\\$#,0.00",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"Currency\" Accuracy=\"2\" ThousandSeparator=\"True\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"0\" /></Format>"
+              }
+            ]
+          },
+          {
+            "type": "calculated",
+            "name": "Gross Margin Rate",
+            "dataType": "double",
+            "isDataTypeInferred": true,
+            "expression": "DIVIDE([Sales Amount]-[Cost Amount], [Sales Amount], 0 )",
+            "formatString": "0.00%;-0.00%;0.00%"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/ ;BI_PROJECT_DW\",",
+                "    dbo_Fact_Sales = Source{[Schema=\"dbo\",Item=\"Fact_Sales\"]}[Data]",
+                "in",
+                "    dbo_Fact_Sales"
+              ]
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "Sum of Sales Quantity",
+            "expression": "SUM([Sales Quantity])",
+            "formatString": "0"
+          },
+          {
+            "name": "Sum of Sales Amount",
+            "expression": "SUM([Sales Amount])",
+            "formatString": "\\$#,0.00;(\\$#,0.00);\\$#,0.00",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"Currency\" Accuracy=\"2\" ThousandSeparator=\"True\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"0\" /></Format>"
+              }
+            ]
+          },
+          {
+            "name": "Average Sale Price",
+            "expression": " DIVIDE([Sum of Sales Amount], [Sum of Sales Quantity], 0)",
+            "formatString": "\\$#,0.00;(\\$#,0.00);\\$#,0.00",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"Currency\" Accuracy=\"2\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"0\" /></Format>"
+              }
+            ]
+          },
+          {
+            "name": "Sales Growth Rate",
+            "expression": " VAR CurrentYearSales = CALCULATE( [Sum of Sales Amount], 'Dim Date'[Year] = 2020) VAR PreviousYearSales = CALCULATE( [Sum of Sales Amount], 'Dim Date'[Year] = 2019 ) RETURN DIVIDE( CurrentYearSales - PreviousYearSales, PreviousYearSales )",
+            "formatString": "0.00%;-0.00%;0.00%"
+          },
+          {
+            "name": "Average of Sales Quantity",
+            "expression": "AVERAGE([Sales Quantity])",
+            "formatString": "0"
+          },
+          {
+            "name": "Sales Growth Rate KPI",
+            "expression": " VAR CurrentYearSales = CALCULATE( [Sum of Sales Amount], 'Dim Date'[Year] = 2020) VAR PreviousYearSales = CALCULATE( [Sum of Sales Amount], 'Dim Date'[Year] = 2019 ) RETURN DIVIDE( CurrentYearSales - PreviousYearSales, PreviousYearSales )",
+            "formatString": "0.00%;-0.00%;0.00%",
+            "kpi": {
+              "targetExpression": "0.2",
+              "targetFormatString": "0.00%;-0.00%;0.00%",
+              "statusGraphic": "Traffic Light - Single",
+              "statusExpression": [
+                "var x='Fact Sales'[Sales Growth Rate KPI] return",
+                "            if(ISBLANK(x),BLANK(),",
+                "                    If(x<0,-1,",
+                "\t                If(x<0.2,0,1)",
+                "                )",
+                "            )",
+                "            "
+              ],
+              "annotations": [
+                {
+                  "name": "GoalType",
+                  "value": "StaticValue"
+                },
+                {
+                  "name": "KpiStatusType",
+                  "value": "Linear"
+                },
+                {
+                  "name": "KpiThresholdType",
+                  "value": "Absolute"
+                },
+                {
+                  "name": "KpiThresholdOrdering",
+                  "value": "Ascending"
+                },
+                {
+                  "name": "KpiThresholdCount",
+                  "value": "2"
+                },
+                {
+                  "name": "KpiThreshold_0",
+                  "value": "0"
+                },
+                {
+                  "name": "KpiThreshold_1",
+                  "value": "0.2"
+                }
+              ]
+            }
+          },
+          {
+            "name": "Gross Margin Percentage KPI",
+            "expression": " DIVIDE([Sum of Sales Amount] - [Sum of Cost Amount], [Sum of Sales Amount], 0)",
+            "formatString": "0.00%;-0.00%;0.00%",
+            "kpi": {
+              "targetExpression": "0.6",
+              "targetFormatString": "0.00%;-0.00%;0.00%",
+              "statusGraphic": "Traffic Light - Single",
+              "statusExpression": [
+                "var x='Fact Sales'[Gross Margin Percentage KPI] return",
+                "            if(ISBLANK(x),BLANK(),",
+                "                    If(x<0.3,-1,",
+                "\t                If(x<0.6,0,1)",
+                "                )",
+                "            )",
+                "            "
+              ],
+              "annotations": [
+                {
+                  "name": "GoalType",
+                  "value": "StaticValue"
+                },
+                {
+                  "name": "KpiStatusType",
+                  "value": "Linear"
+                },
+                {
+                  "name": "KpiThresholdType",
+                  "value": "Absolute"
+                },
+                {
+                  "name": "KpiThresholdOrdering",
+                  "value": "Ascending"
+                },
+                {
+                  "name": "KpiThresholdCount",
+                  "value": "2"
+                },
+                {
+                  "name": "KpiThreshold_0",
+                  "value": "0.3"
+                },
+                {
+                  "name": "KpiThreshold_1",
+                  "value": "0.6"
+                }
+              ]
+            }
+          },
+          {
+            "name": "Sum of Profit Amount",
+            "expression": "SUM([Profit Amount])",
+            "formatString": "\\$#,0.00;(\\$#,0.00);\\$#,0.00",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"Currency\" Accuracy=\"2\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"0\" /></Format>"
+              }
+            ]
+          },
+          {
+            "name": "Sum of Cost Amount",
+            "expression": "SUM([Cost Amount])",
+            "formatString": "\\$#,0.00;(\\$#,0.00);\\$#,0.00",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"Currency\" Accuracy=\"2\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"0\" /></Format>"
+              }
+            ]
+          },
+          {
+            "name": "Gross Margin Percentage",
+            "expression": " DIVIDE([Sum of Sales Amount] - [Sum of Cost Amount], [Sum of Sales Amount], 0)",
+            "formatString": "0.00%;-0.00%;0.00%"
+          }
+        ]
+      },
+      {
+        "name": "Dim Date",
+        "dataCategory": "Time",
+        "columns": [
+          {
+            "name": "SK_Date",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SK_Date"
+          },
+          {
+            "name": "Date",
+            "dataType": "dateTime",
+            "isKey": true,
+            "sourceColumn": "Proper_Date",
+            "formatString": "Short Date",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"DateTimeShortDatePattern\" />"
+              }
+            ]
+          },
+          {
+            "name": "Full Date",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Full_Date"
+          },
+          {
+            "name": "Day",
+            "dataType": "int64",
+            "sourceColumn": "Day_Number",
+            "formatString": "0"
+          },
+          {
+            "name": "Weekday",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "Day_Name"
+          },
+          {
+            "name": "Month Number",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "Month_Number"
+          },
+          {
+            "name": "Month",
+            "dataType": "string",
+            "sourceColumn": "Month_Name",
+            "sortByColumn": "Month Number"
+          },
+          {
+            "name": "Trimester Number",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "Trimester_Number"
+          },
+          {
+            "name": "Trimester",
+            "dataType": "string",
+            "sourceColumn": "Trimester_Name",
+            "sortByColumn": "Trimester Number"
+          },
+          {
+            "name": "Semester Number",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "Semester_Number"
+          },
+          {
+            "name": "Semester",
+            "dataType": "string",
+            "sourceColumn": "Semester_Name",
+            "sortByColumn": "Semester Number"
+          },
+          {
+            "name": "Year",
+            "dataType": "int64",
+            "sourceColumn": "Year",
+            "formatString": "0"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/ ;BI_PROJECT_DW\",",
+                "    dbo_Dim_Date = Source{[Schema=\"dbo\",Item=\"Dim_Date\"]}[Data]",
+                "in",
+                "    dbo_Dim_Date"
+              ]
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "Date Hierarchy",
+            "levels": [
+              {
+                "name": "Year",
+                "ordinal": 0,
+                "column": "Year"
+              },
+              {
+                "name": "Semester",
+                "ordinal": 1,
+                "column": "Semester"
+              },
+              {
+                "name": "Trimester",
+                "ordinal": 2,
+                "column": "Trimester"
+              },
+              {
+                "name": "Month",
+                "ordinal": 3,
+                "column": "Month"
+              },
+              {
+                "name": "Day",
+                "ordinal": 4,
+                "column": "Day"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Dim Product",
+        "columns": [
+          {
+            "name": "SK_Product",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SK_Product"
+          },
+          {
+            "name": "BK_Product",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "BK_Product"
+          },
+          {
+            "name": "Item",
+            "dataType": "string",
+            "sourceColumn": "Item_Description"
+          },
+          {
+            "name": "Category",
+            "dataType": "string",
+            "sourceColumn": "Category_Name"
+          },
+          {
+            "name": "Sub-Category",
+            "dataType": "string",
+            "sourceColumn": "Sub_Category_Name"
+          },
+          {
+            "name": "Pack",
+            "dataType": "int64",
+            "sourceColumn": "Pack",
+            "formatString": "0"
+          },
+          {
+            "name": "Bottle Volume",
+            "dataType": "int64",
+            "sourceColumn": "Bottle_Volume",
+            "formatString": "0"
+          },
+          {
+            "name": "State Bottle Cost",
+            "dataType": "double",
+            "sourceColumn": "State_Bottle_Cost",
+            "formatString": "\\$#,0.00;(\\$#,0.00);\\$#,0.00",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"Currency\" Accuracy=\"2\" ThousandSeparator=\"True\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"0\" /></Format>"
+              }
+            ]
+          },
+          {
+            "name": "State Bottle Retail",
+            "dataType": "double",
+            "sourceColumn": "State_Bottle_Retail",
+            "formatString": "\\$#,0.00;(\\$#,0.00);\\$#,0.00",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"Currency\" Accuracy=\"2\" ThousandSeparator=\"True\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"0\" /></Format>"
+              }
+            ]
+          },
+          {
+            "name": "SCD_Start_Date",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "sourceColumn": "SCD_Start_Date"
+          },
+          {
+            "name": "SCD_End_Date",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "sourceColumn": "SCD_End_Date"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/ ;BI_PROJECT_DW\",",
+                "    dbo_Dim_Product = Source{[Schema=\"dbo\",Item=\"Dim_Product\"]}[Data]",
+                "in",
+                "    dbo_Dim_Product"
+              ]
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "Product Hierarchy",
+            "levels": [
+              {
+                "name": "Category",
+                "ordinal": 0,
+                "column": "Category"
+              },
+              {
+                "name": "Sub-Category",
+                "ordinal": 1,
+                "column": "Sub-Category"
+              },
+              {
+                "name": "Item",
+                "ordinal": 2,
+                "column": "Item"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Dim Shipping",
+        "columns": [
+          {
+            "name": "SK_Shipping",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SK_Shipping"
+          },
+          {
+            "name": "BK_Shipping",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "BK_Shipping"
+          },
+          {
+            "name": "Carrier",
+            "dataType": "string",
+            "sourceColumn": "Carrier_Name"
+          },
+          {
+            "name": "Category",
+            "dataType": "string",
+            "sourceColumn": "Shipping_Category"
+          },
+          {
+            "name": "Class",
+            "dataType": "string",
+            "sourceColumn": "Shipping_Class"
+          },
+          {
+            "name": "SCD_Start_Date",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "sourceColumn": "SCD_Start_Date"
+          },
+          {
+            "name": "SCD_End_Date",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "sourceColumn": "SCD_End_Date"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/ ;BI_PROJECT_DW\",",
+                "    dbo_Dim_Shipping = Source{[Schema=\"dbo\",Item=\"Dim_Shipping\"]}[Data]",
+                "in",
+                "    dbo_Dim_Shipping"
+              ]
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "Shipping Hierarchy",
+            "levels": [
+              {
+                "name": "Category",
+                "ordinal": 0,
+                "column": "Category"
+              },
+              {
+                "name": "Class",
+                "ordinal": 1,
+                "column": "Class"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Dim Store",
+        "columns": [
+          {
+            "name": "SK_Store",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SK_Store"
+          },
+          {
+            "name": "BK_Store",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "BK_Store"
+          },
+          {
+            "name": "Store Name",
+            "dataType": "string",
+            "sourceColumn": "Store_Name"
+          },
+          {
+            "name": "Address",
+            "dataType": "string",
+            "sourceColumn": "Proper_Address"
+          },
+          {
+            "name": "City",
+            "dataType": "string",
+            "sourceColumn": "City"
+          },
+          {
+            "name": "Zip Code",
+            "dataType": "int64",
+            "sourceColumn": "Zip_Code",
+            "formatString": "0"
+          },
+          {
+            "name": "County Number",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "County_Number",
+            "formatString": "0"
+          },
+          {
+            "name": "County",
+            "dataType": "string",
+            "sourceColumn": "County"
+          },
+          {
+            "name": "SCD_Start_Date",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "sourceColumn": "SCD_Start_Date"
+          },
+          {
+            "name": "SCD_End_Date",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "sourceColumn": "SCD_End_Date"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/ ;BI_PROJECT_DW\",",
+                "    dbo_Dim_Store = Source{[Schema=\"dbo\",Item=\"Dim_Store\"]}[Data]",
+                "in",
+                "    dbo_Dim_Store"
+              ]
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "Store Hierarchy",
+            "levels": [
+              {
+                "name": "County",
+                "ordinal": 0,
+                "column": "County"
+              },
+              {
+                "name": "City",
+                "ordinal": 1,
+                "column": "City"
+              },
+              {
+                "name": "Address",
+                "ordinal": 2,
+                "column": "Address"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Dim Vendor",
+        "columns": [
+          {
+            "name": "SK_Vendor",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "SK_Vendor"
+          },
+          {
+            "name": "BK_Vendor",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "BK_Vendor"
+          },
+          {
+            "name": "Vendor Name",
+            "dataType": "string",
+            "sourceColumn": "Vendor_Name"
+          },
+          {
+            "name": "Manager Name",
+            "dataType": "string",
+            "sourceColumn": "Manager_Name"
+          },
+          {
+            "name": "Contact Details",
+            "dataType": "string",
+            "sourceColumn": "Contact_Details"
+          },
+          {
+            "name": "SCD_Start_Date",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "sourceColumn": "SCD_Start_Date"
+          },
+          {
+            "name": "SCD_End_Date",
+            "dataType": "dateTime",
+            "isHidden": true,
+            "sourceColumn": "SCD_End_Date"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/ ;BI_PROJECT_DW\",",
+                "    dbo_Dim_Vendor = Source{[Schema=\"dbo\",Item=\"Dim_Vendor\"]}[Data]",
+                "in",
+                "    dbo_Dim_Vendor"
+              ]
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "Vendor Hierarchy",
+            "levels": [
+              {
+                "name": "Vendor Name",
+                "ordinal": 0,
+                "column": "Vendor Name"
+              },
+              {
+                "name": "Manager Name",
+                "ordinal": 1,
+                "column": "Manager Name"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "name": "32e9204b-3d73-4cc1-a3f8-6cccb4301360",
+        "fromTable": "Fact Sales",
+        "fromColumn": "FK_Date",
+        "toTable": "Dim Date",
+        "toColumn": "SK_Date"
+      },
+      {
+        "name": "3f3c40b2-9fc6-4ecc-9c13-4d866d9349c1",
+        "fromTable": "Fact Sales",
+        "fromColumn": "FK_Product",
+        "toTable": "Dim Product",
+        "toColumn": "SK_Product"
+      },
+      {
+        "name": "0aa908a0-6ad0-4f47-8dd6-a39224effd0f",
+        "fromTable": "Fact Sales",
+        "fromColumn": "FK_Shipping",
+        "toTable": "Dim Shipping",
+        "toColumn": "SK_Shipping"
+      },
+      {
+        "name": "6b0bf73a-4377-452d-a2c1-ce49f2a580db",
+        "fromTable": "Fact Sales",
+        "fromColumn": "FK_Store",
+        "toTable": "Dim Store",
+        "toColumn": "SK_Store"
+      },
+      {
+        "name": "607b6c05-0f93-4158-b163-9382d6fd1e44",
+        "fromTable": "Fact Sales",
+        "fromColumn": "FK_Vendor",
+        "toTable": "Dim Vendor",
+        "toColumn": "SK_Vendor"
+      }
+    ],
+    "perspectives": [
+      {
+        "name": "Clients Management Perspective",
+        "tables": [
+          {
+            "name": "Dim Date",
+            "columns": [
+              {
+                "name": "Date"
+              },
+              {
+                "name": "Weekday"
+              },
+              {
+                "name": "Day"
+              },
+              {
+                "name": "Full Date"
+              },
+              {
+                "name": "Month"
+              },
+              {
+                "name": "Month Number"
+              },
+              {
+                "name": "Semester"
+              },
+              {
+                "name": "Semester Number"
+              },
+              {
+                "name": "SK_Date"
+              },
+              {
+                "name": "Trimester"
+              },
+              {
+                "name": "Trimester Number"
+              },
+              {
+                "name": "Year"
+              }
+            ],
+            "hierarchies": [
+              {
+                "name": "Date Hierarchy"
+              }
+            ]
+          },
+          {
+            "name": "Dim Product",
+            "columns": [
+              {
+                "name": "BK_Product"
+              },
+              {
+                "name": "Bottle Volume"
+              },
+              {
+                "name": "Category"
+              },
+              {
+                "name": "Item"
+              },
+              {
+                "name": "Pack"
+              },
+              {
+                "name": "SCD_End_Date"
+              },
+              {
+                "name": "SCD_Start_Date"
+              },
+              {
+                "name": "SK_Product"
+              },
+              {
+                "name": "State Bottle Cost"
+              },
+              {
+                "name": "State Bottle Retail"
+              },
+              {
+                "name": "Sub-Category"
+              }
+            ],
+            "hierarchies": [
+              {
+                "name": "Product Hierarchy"
+              }
+            ]
+          },
+          {
+            "name": "Dim Shipping",
+            "columns": [
+              {
+                "name": "BK_Shipping"
+              },
+              {
+                "name": "Carrier"
+              },
+              {
+                "name": "Category"
+              },
+              {
+                "name": "Class"
+              },
+              {
+                "name": "SCD_End_Date"
+              },
+              {
+                "name": "SCD_Start_Date"
+              },
+              {
+                "name": "SK_Shipping"
+              }
+            ],
+            "hierarchies": [
+              {
+                "name": "Shipping Hierarchy"
+              }
+            ]
+          },
+          {
+            "name": "Dim Store",
+            "columns": [
+              {
+                "name": "Address"
+              },
+              {
+                "name": "BK_Store"
+              },
+              {
+                "name": "City"
+              },
+              {
+                "name": "County"
+              },
+              {
+                "name": "County Number"
+              },
+              {
+                "name": "SCD_End_Date"
+              },
+              {
+                "name": "SCD_Start_Date"
+              },
+              {
+                "name": "SK_Store"
+              },
+              {
+                "name": "Store Name"
+              },
+              {
+                "name": "Zip Code"
+              }
+            ],
+            "hierarchies": [
+              {
+                "name": "Store Hierarchy"
+              }
+            ]
+          },
+          {
+            "name": "Fact Sales",
+            "columns": [
+              {
+                "name": "Cost Amount"
+              },
+              {
+                "name": "FK_Date"
+              },
+              {
+                "name": "FK_Product"
+              },
+              {
+                "name": "FK_Shipping"
+              },
+              {
+                "name": "FK_Store"
+              },
+              {
+                "name": "FK_Vendor"
+              },
+              {
+                "name": "Sales Amount"
+              },
+              {
+                "name": "Sales Quantity"
+              },
+              {
+                "name": "Profit Amount"
+              },
+              {
+                "name": "Gross Margin Rate"
+              }
+            ],
+            "measures": [
+              {
+                "name": "Average of Sales Quantity"
+              },
+              {
+                "name": "Average Sale Price"
+              },
+              {
+                "name": "Sales Growth Rate"
+              },
+              {
+                "name": "Sum of Sales Amount"
+              },
+              {
+                "name": "Sum of Sales Quantity"
+              },
+              {
+                "name": "Sales Growth Rate KPI"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Vendor Management Perspective",
+        "tables": [
+          {
+            "name": "Dim Date",
+            "columns": [
+              {
+                "name": "Date"
+              },
+              {
+                "name": "Day"
+              },
+              {
+                "name": "Full Date"
+              },
+              {
+                "name": "Month"
+              },
+              {
+                "name": "Month Number"
+              },
+              {
+                "name": "Semester"
+              },
+              {
+                "name": "Semester Number"
+              },
+              {
+                "name": "SK_Date"
+              },
+              {
+                "name": "Trimester"
+              },
+              {
+                "name": "Trimester Number"
+              },
+              {
+                "name": "Weekday"
+              },
+              {
+                "name": "Year"
+              }
+            ],
+            "hierarchies": [
+              {
+                "name": "Date Hierarchy"
+              }
+            ]
+          },
+          {
+            "name": "Dim Product",
+            "columns": [
+              {
+                "name": "BK_Product"
+              },
+              {
+                "name": "Bottle Volume"
+              },
+              {
+                "name": "Category"
+              },
+              {
+                "name": "Item"
+              },
+              {
+                "name": "Pack"
+              },
+              {
+                "name": "SCD_End_Date"
+              },
+              {
+                "name": "SCD_Start_Date"
+              },
+              {
+                "name": "SK_Product"
+              },
+              {
+                "name": "State Bottle Cost"
+              },
+              {
+                "name": "State Bottle Retail"
+              },
+              {
+                "name": "Sub-Category"
+              }
+            ],
+            "hierarchies": [
+              {
+                "name": "Product Hierarchy"
+              }
+            ]
+          },
+          {
+            "name": "Dim Vendor",
+            "columns": [
+              {
+                "name": "BK_Vendor"
+              },
+              {
+                "name": "Contact Details"
+              },
+              {
+                "name": "Manager Name"
+              },
+              {
+                "name": "SCD_End_Date"
+              },
+              {
+                "name": "SCD_Start_Date"
+              },
+              {
+                "name": "SK_Vendor"
+              },
+              {
+                "name": "Vendor Name"
+              }
+            ],
+            "hierarchies": [
+              {
+                "name": "Vendor Hierarchy"
+              }
+            ]
+          },
+          {
+            "name": "Fact Sales",
+            "columns": [
+              {
+                "name": "Cost Amount"
+              },
+              {
+                "name": "FK_Date"
+              },
+              {
+                "name": "FK_Product"
+              },
+              {
+                "name": "FK_Shipping"
+              },
+              {
+                "name": "FK_Store"
+              },
+              {
+                "name": "FK_Vendor"
+              },
+              {
+                "name": "Gross Margin Rate"
+              },
+              {
+                "name": "Profit Amount"
+              },
+              {
+                "name": "Sales Amount"
+              },
+              {
+                "name": "Sales Quantity"
+              }
+            ],
+            "measures": [
+              {
+                "name": "Gross Margin Percentage"
+              },
+              {
+                "name": "Gross Margin Percentage KPI"
+              },
+              {
+                "name": "Sum of Cost Amount"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "roles": [
+      {
+        "name": "Brandy Analyst",
+        "description": "Person who analysis Brandy category.",
+        "modelPermission": "read",
+        "tablePermissions": [
+          {
+            "name": "Dim Product",
+            "filterExpression": "'Dim Product'[Category] = \"BRANDY\""
+          },
+          {
+            "name": "Dim Vendor",
+            "columnPermissions": [
+              {
+                "name": "SK_Vendor",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "BK_Vendor",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "Vendor Name",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "Manager Name",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "Contact Details",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "SCD_Start_Date",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "SCD_End_Date",
+                "metadataPermission": "none"
+              }
+            ]
+          },
+          {
+            "name": "Dim Shipping",
+            "metadataPermission": "none"
+          }
+        ]
+      },
+      {
+        "name": "Cocktail Analyst",
+        "description": "Person who analysis Cocktail category.",
+        "modelPermission": "read",
+        "tablePermissions": [
+          {
+            "name": "Dim Product",
+            "filterExpression": "'Dim Product'[Category] = \"COCKTAIL\""
+          },
+          {
+            "name": "Dim Shipping",
+            "metadataPermission": "none"
+          }
+        ]
+      },
+      {
+        "name": "Gin Analyst",
+        "description": "Person who analysis Gin category.",
+        "modelPermission": "read",
+        "tablePermissions": [
+          {
+            "name": "Dim Product",
+            "filterExpression": "'Dim Product'[Category] = \"GIN\""
+          },
+          {
+            "name": "Dim Shipping",
+            "metadataPermission": "none"
+          }
+        ]
+      },
+      {
+        "name": "Liqueurs Analyst",
+        "description": "Person who analysis Liqueurs category.",
+        "modelPermission": "read",
+        "tablePermissions": [
+          {
+            "name": "Dim Product",
+            "filterExpression": "'Dim Product'[Category] = \"LIQUEURS\""
+          },
+          {
+            "name": "Dim Shipping",
+            "metadataPermission": "none"
+          }
+        ]
+      },
+      {
+        "name": "Rum Analyst",
+        "description": "Person who analysis Rum category.",
+        "modelPermission": "read",
+        "tablePermissions": [
+          {
+            "name": "Dim Product",
+            "filterExpression": "'Dim Product'[Category] = \"RUM\""
+          },
+          {
+            "name": "Dim Shipping",
+            "metadataPermission": "none"
+          }
+        ]
+      },
+      {
+        "name": "Special Analyst",
+        "description": "Person who analysis Special category.",
+        "modelPermission": "read",
+        "tablePermissions": [
+          {
+            "name": "Dim Product",
+            "filterExpression": "'Dim Product'[Category] = \"SPECIAL\""
+          },
+          {
+            "name": "Dim Shipping",
+            "metadataPermission": "none"
+          }
+        ]
+      },
+      {
+        "name": "Spirit Analyst",
+        "description": "Person who analysis Spirit category.",
+        "modelPermission": "read",
+        "tablePermissions": [
+          {
+            "name": "Dim Product",
+            "filterExpression": "'Dim Product'[Category] = \"SPIRIT\""
+          },
+          {
+            "name": "Dim Shipping",
+            "metadataPermission": "none"
+          }
+        ]
+      },
+      {
+        "name": "Tequila Analyst",
+        "description": "Person who analysis Tequila category.",
+        "modelPermission": "read",
+        "tablePermissions": [
+          {
+            "name": "Dim Product",
+            "filterExpression": "'Dim Product'[Category] = \"TEQUILA\"",
+            "columnPermissions": [
+              {
+                "name": "SK_Product",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "BK_Product",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "Item",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "Category",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "Sub-Category",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "Pack",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "Bottle Volume",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "State Bottle Cost",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "State Bottle Retail",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "SCD_Start_Date",
+                "metadataPermission": "none"
+              },
+              {
+                "name": "SCD_End_Date",
+                "metadataPermission": "none"
+              }
+            ]
+          },
+          {
+            "name": "Dim Shipping",
+            "metadataPermission": "none"
+          }
+        ]
+      },
+      {
+        "name": "Vodka Analyst",
+        "description": "Person who analysis Vodka category.",
+        "modelPermission": "read",
+        "tablePermissions": [
+          {
+            "name": "Dim Product",
+            "filterExpression": "'Dim Product'[Category] = \"VODKA\""
+          },
+          {
+            "name": "Dim Shipping",
+            "metadataPermission": "none"
+          }
+        ]
+      },
+      {
+        "name": "Whiskey Analyst",
+        "description": "Person who analysis Whiskey category.",
+        "modelPermission": "read",
+        "tablePermissions": [
+          {
+            "name": "Dim Product",
+            "filterExpression": "'Dim Product'[Category] = \"WHISKEY\""
+          },
+          {
+            "name": "Dim Shipping",
+            "metadataPermission": "none"
+          }
+        ]
+      }
+    ],
+    "annotations": [
+      {
+        "name": "ClientCompatibilityLevel",
+        "value": "600"
+      }
+    ]
+  },
+  "id": "SemanticModel"
+}

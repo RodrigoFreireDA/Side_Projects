@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SharedDataSet xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/shareddatasetdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <DataSet Name="DataSet1">
+    <Query>
+      <DataSourceReference>Tabular Model</DataSourceReference>
+      <CommandText>EVALUATE SUMMARIZECOLUMNS('Dim Vendor'[Vendor Name], 'Dim Product'[Category], 'Dim Date'[Semester], 'Dim Date'[Year], "Sum of Cost Amount", [Sum of Cost Amount])</CommandText>
+      <rd:DesignerState>
+        <QueryDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/AnalysisServices/QueryDefinition">
+          <CommandType>DAX</CommandType>
+          <QuerySpecification xsi:type="MDXQuerySpecification">
+            <Select>
+              <Items>
+                <Item>
+                  <ID xsi:type="Level">
+                    <DimensionName>Dim Vendor</DimensionName>
+                    <HierarchyName>Vendor Name</HierarchyName>
+                    <HierarchyUniqueName>[Dim Vendor].[Vendor Name]</HierarchyUniqueName>
+                    <LevelName>Vendor Name</LevelName>
+                    <UniqueName>[Dim Vendor].[Vendor Name].[Vendor Name]</UniqueName>
+                  </ID>
+                  <ItemCaption>Vendor Name</ItemCaption>
+                  <UniqueName>true</UniqueName>
+                </Item>
+                <Item>
+                  <ID xsi:type="Level">
+                    <DimensionName>Dim Product</DimensionName>
+                    <HierarchyName>Category</HierarchyName>
+                    <HierarchyUniqueName>[Dim Product].[Category]</HierarchyUniqueName>
+                    <LevelName>Category</LevelName>
+                    <UniqueName>[Dim Product].[Category].[Category]</UniqueName>
+                  </ID>
+                  <ItemCaption>Category</ItemCaption>
+                  <UniqueName>true</UniqueName>
+                </Item>
+                <Item>
+                  <ID xsi:type="Level">
+                    <DimensionName>Dim Date</DimensionName>
+                    <HierarchyName>Semester</HierarchyName>
+                    <HierarchyUniqueName>[Dim Date].[Semester]</HierarchyUniqueName>
+                    <LevelName>Semester</LevelName>
+                    <UniqueName>[Dim Date].[Semester].[Semester]</UniqueName>
+                  </ID>
+                  <ItemCaption>Semester</ItemCaption>
+                  <UniqueName>true</UniqueName>
+                </Item>
+                <Item>
+                  <ID xsi:type="Level">
+                    <DimensionName>Dim Date</DimensionName>
+                    <HierarchyName>Year</HierarchyName>
+                    <HierarchyUniqueName>[Dim Date].[Year]</HierarchyUniqueName>
+                    <LevelName>Year</LevelName>
+                    <UniqueName>[Dim Date].[Year].[Year]</UniqueName>
+                  </ID>
+                  <ItemCaption>Year</ItemCaption>
+                  <UniqueName>true</UniqueName>
+                </Item>
+                <Item>
+                  <ID xsi:type="Measure">
+                    <MeasureName>Sum of Cost Amount</MeasureName>
+                    <UniqueName>[Measures].[Sum of Cost Amount]</UniqueName>
+                  </ID>
+                  <ItemCaption>Sum of Cost Amount</ItemCaption>
+                  <BackColor>true</BackColor>
+                  <ForeColor>true</ForeColor>
+                  <FontFamily>true</FontFamily>
+                  <FontSize>true</FontSize>
+                  <FontWeight>true</FontWeight>
+                  <FontStyle>true</FontStyle>
+                  <FontDecoration>true</FontDecoration>
+                  <FormattedValue>true</FormattedValue>
+                  <FormatString>true</FormatString>
+                </Item>
+              </Items>
+            </Select>
+            <AutoExecute>false</AutoExecute>
+            <From>Model</From>
+            <Filter>
+              <FilterItems />
+            </Filter>
+            <Calculations />
+            <Aggregates />
+            <QueryProperties>
+              <IncludeMemberValue>true</IncludeMemberValue>
+            </QueryProperties>
+          </QuerySpecification>
+          <Query>
+            <Statement>EVALUATE SUMMARIZECOLUMNS('Dim Vendor'[Vendor Name], 'Dim Product'[Category], 'Dim Date'[Semester], 'Dim Date'[Year], "Sum of Cost Amount", [Sum of Cost Amount])</Statement>
+            <ParameterDefinitions />
+          </Query>
+        </QueryDefinition>
+      </rd:DesignerState>
+    </Query>
+    <Fields>
+      <Field Name="Vendor_Name">
+        <DataField>Dim Vendor[Vendor Name]</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Category">
+        <DataField>Dim Product[Category]</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Semester">
+        <DataField>Dim Date[Semester]</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Year">
+        <DataField>Dim Date[Year]</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Sum_of_Cost_Amount">
+        <DataField>[Sum of Cost Amount]</DataField>
+        <rd:TypeName>System.Int32</rd:TypeName>
+      </Field>
+    </Fields>
+  </DataSet>
+</SharedDataSet>
