@@ -1,7 +1,7 @@
-# Iowa Alcohol Beverages Division - Build a Data Warehouse 
-Create and explain a Business Intelligence solution within the framework of a fully functional Data Warehouse. This is a group project that was part of the Business Intelligence course.
+# Iowa Alcohol Beverages Division - Reports & Dashboards
+Developing full BI solution: OLAP tabular model, reports, dashboards, and analysis using Microsoft tools. This is a group project that was part of the Business Intelligence course.
 
-# [Report](https://github.com/RodrigoFreireDA/side_projects/blob/4ebf82d3b8e588718343b84db22a0ee2faec9d87/3.%20Iowa%20ABD%20-%20Data%20Warehouse/Report_Compressed.pdf) 
+# [Report](https://github.com/RodrigoFreireDA/side_projects/blob/e9ff3bee0d7b13de91f9e11a7c812bbf69951c59/4.%20Iowa%20ABD%20-%20Reports%20%26%20Dashboards/Report.pdf) | [Power BI Dashboard](https://app.powerbi.com/view?r=eyJrIjoiNDk0MDNmY2YtODA0Zi00MmYwLWFiNjYtNjE5MGM2Y2RjNDAwIiwidCI6ImU0YmQ2OWZmLWU2ZjctNGMyZS1iMjQ3LTQxYjU0YmEyNDkwZSIsImMiOjh9&pageName=ReportSection790526fb9abe9efb2415)
 
-![Image](https://github.com/RodrigoFreireDA/side_projects/assets/119375701/2c6279ab-cc9c-42eb-9dcc-5a39b7ebcd8e)
+![image](https://github.com/RodrigoFreireDA/side_projects/assets/119375701/95d56038-c49f-43cc-8f4c-4f8f1fc01dd3)
 
